@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Products — Hameed Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Hameed <span>Studio</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html" class="active">Collections</a>
+      <a href="products.html">Products</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+    </nav>
+    <div class="header-icons">
+     
+      <a href="cart.html" class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="cart-count">0</span>
+      </a>
+      <button class="hamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="products.html">Collections</a>
+    <a href="products.html">Products</a>
+    <a href="#">About Us</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a><span class="sep">›</span><span class="current">Products</span>
+  </div>
+  <div class="page-title-row">
+    <h1>All Products</h1>
+  </div>
+
+  <div class="products-layout">
+    <div class="chip-row filter-row" id="category-filter-row"></div>
+    <div class="product-grid" id="all-products-grid"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4 class="logo" style="font-size:1.3rem;margin-bottom:12px;">Hameed <span style="color:#fff">Studio</span></h4>
+        <p>Personalised mugs, frames and gifts crafted with care — for every memory worth keeping.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul><li><a href="products.html">Photo Mugs</a></li><li><a href="products.html">Photo Frames</a></li><li><a href="products.html">Gift Combos</a></li></ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul><li><a href="#">About Us</a></li><li><a href="#">Contact</a></li><li><a href="#">FAQs</a></li></ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul><li><a href="#">Shipping Policy</a></li><li><a href="#">Returns & Refunds</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Hameed Studio. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const categories = [
+    { key: "all", label: "All Products" },
+    { key: "Deals", label: "Deals" },
+    { key: "Mugs", label: "Mugs" },
+    { key: "Cushion", label: "Cushion" },
+    { key: "Frames", label: "Frames" },
+    { key: "shirts", label: "shirts" },
+    { key: "albums", label: "albums" },
+    { key: "Lunch boxes and waterbottles", label: "Lunch boxes and waterbottles" },
+    { key: "Wallets", label: "Wallets" },
+    { key: "jewelery items", label: "jewelery items" },
+    { key: "pens", label: "pens" },
+    { key: "keyring", label: "keyring" },
+    { key: "Badge", label: "Badge" },
+    { key: "Mobile cover", label: "Mobile cover" }
+  ];
+
+  const filterRow = document.getElementById("category-filter-row");
+  const allGrid = document.getElementById("all-products-grid");
+  const params = new URLSearchParams(location.search);
+  let activeCategory = categories.find(c => c.key === params.get("category"))?.key || "all";
+
+  function renderCategoryFilters() {
+    filterRow.innerHTML = categories.map(category => `
+      <a href="#" class="chip ${category.key === activeCategory ? "active" : ""}" data-category="${category.key}">
+        <b>${category.label}</b>
+      </a>
+    `).join("");
+
+    filterRow.querySelectorAll("[data-category]").forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        activeCategory = button.dataset.category;
+        renderCategoryFilters();
+        renderProductsForCategory(activeCategory);
+      });
+    });
+  }
+
+  function renderProductsForCategory(categoryKey) {
+    const items = categoryKey === "all"
+      ? PRODUCTS
+      : PRODUCTS.filter(p => p.category === categoryKey);
+
+    allGrid.innerHTML = items.length
+      ? items.map(p => productCardHTML(p)).join("")
+      : `<p>No products found for ${categoryKey}</p>`;
+  }
+
+  renderCategoryFilters();
+  renderProductsForCategory(activeCategory);
+</script>
+</body>
+</html>
